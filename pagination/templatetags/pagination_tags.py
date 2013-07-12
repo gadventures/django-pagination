@@ -217,6 +217,14 @@ def paginate(context, window=DEFAULT_WINDOW, hashtag=''):
             getvars = context['request'].GET.copy()
             if 'page' in getvars:
                 del getvars['page']
+
+            # Remove some request vars.  This is useful for things like
+            # PJAX which includes a _pjax var, but this is an ugly,
+            # brute-force way of preventing it from propagating
+            for var in getvars.keys():
+                if var.startswith('_'):
+                    del getvars[var]
+
             if len(getvars.keys()) > 0:
                 to_return['getvars'] = "&%s" % getvars.urlencode()
             else:
